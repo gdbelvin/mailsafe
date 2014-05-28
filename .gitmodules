@@ -1,0 +1,15 @@
+[submodule "django-autoload"]
+	path = django-autoload
+	url = https://github.com/adieu/django-autoload
+[submodule "django-dbindexer"]
+	path = django-dbindexer
+	url = git@github.com:django-nonrel/django-dbindexer.git
+[submodule "djangoappengine"]
+	path = djangoappengine
+	url = git@github.com:django-nonrel/djangoappengine.git
+[submodule "djangotoolbox"]
+	path = djangotoolbox
+	url = git@github.com:django-nonrel/djangotoolbox.git
+[submodule "django"]
+	path = django
+	url = git@github.com:django-nonrel/django.git
