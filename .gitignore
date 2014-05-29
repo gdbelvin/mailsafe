@@ -1,5 +1,6 @@
 .DS_Store
 *.pyc
+*.swp
 .gaedata
 
 django
@@ -11,5 +12,6 @@ autoload
 mediagenerator
 filetransfers
 mapreduce
+twilio
 
 build

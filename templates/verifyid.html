@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}It works!{% endblock %}
+
+{% block content %}
+<h1>Hi, are you {%user%}?</h1>
+<p>
+Click <a href="call">call xxx-xxx-{%phone-postfix%}</a> to verify your identity.
+</p>
+{% endblock %}
