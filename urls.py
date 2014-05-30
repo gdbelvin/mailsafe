@@ -15,6 +15,6 @@ urlpatterns = patterns('',
     ('^$', 'django.views.generic.simple.direct_to_template', {'template': 'home.html'}),
     ('^d/.*$', 'django.views.generic.simple.direct_to_template', {'template': 'viewdoc.html'}),
     ('^v/.*$', 'django.views.generic.simple.direct_to_template', {'template': 'verifyid.html'}),
-    ('^call/$', 'django.views.generic.simple.direct_to_template', {'template': 'home.html'}),
+    (r'^call/(.*)$', 'views.twilio.text'),
     ('^admin/', include(admin.site.urls)),
 )

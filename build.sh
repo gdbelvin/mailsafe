@@ -15,7 +15,12 @@ cp -r ${DOWNLOAD_DIR}/django-dbindexer/dbindexer ./dbindexer
 cp -r ${DOWNLOAD_DIR}/django-nonrel/django ./django
 cp -r ${DOWNLOAD_DIR}/djangoappengine/djangoappengine ./djangoappengine
 cp -r ${DOWNLOAD_DIR}/djangotoolbox/djangotoolbox ./djangotoolbox
+
+# Twilio and supporting libraries
 cp -r ${DOWNLOAD_DIR}/twilio/twilio ./twilio
+cp -r ${DOWNLOAD_DIR}/six/six.py ./six.py
+cp -r ${DOWNLOAD_DIR}/httplib2/python2/httplib2 ./httplib2
+cp -r ${DOWNLOAD_DIR}/socksipy-branch/socks.py ./socks.py
 
 [ -f ${DOWNLOAD_DIR}/pip-delete-this-directory.txt ] && rm -rf ${DOWNLOAD_DIR}
 

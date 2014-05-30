@@ -12,6 +12,10 @@ autoload
 mediagenerator
 filetransfers
 mapreduce
+
 twilio
+six.py
+httplib2
+socks.py
 
 build
