@@ -1,5 +1,4 @@
-mailsafe
+MailSafe
 ========
 
-Norel Django instance taken from:
-http://djangoappengine.readthedocs.org/en/latest/installation.html
+The safest way to send protected email content, or something like that.
