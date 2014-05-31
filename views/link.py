@@ -3,7 +3,7 @@ from django.template import loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone
 from django.utils.log import getLogger
 
-from mailsafe.models import Link
+from models import Link
 
 logger = getLogger('django.request')
 

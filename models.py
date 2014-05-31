@@ -31,6 +31,6 @@ class Content(db.Model):
 
 class Link(db.Model):
     link = UUIDProperty()
-    supporter_id = models.ForeignKey(Supporter)
-    content_id = models.ForeignKey(Content)
+    supporter_id = db.IntegerProperty()
+    content_id = db.IntegerProperty()
     compromised = db.BooleanProperty()
