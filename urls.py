@@ -19,4 +19,6 @@ urlpatterns = patterns('',
     (r'^call/(.*)$', 'views.phone.call'),
     (r'^twiml/(.*)$', 'views.phone.twiml'),
     ('^admin/', include(admin.site.urls)),
+    ('^author/create', 'views.author.create'),
+    ('^supporter/create', 'views.supporter.create')
 )

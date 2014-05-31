@@ -6,4 +6,3 @@ class Supporter(db.Model):
     email = db.TextProperty()
     phone = db.TextProperty()
     date_added = db.DateTimeProperty(auto_now_add=True)
-
