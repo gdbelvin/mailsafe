@@ -1,6 +1,8 @@
 MailSafe
 ========
 
+![Mail Safe](/mailsafe.png)
+
 The safest way to send protected email content, or something like that.
 
 Installation
