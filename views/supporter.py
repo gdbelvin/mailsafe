@@ -5,6 +5,7 @@ from django.utils.log import getLogger
 from google.appengine.ext import ndb
 from models import Supporter, Author
 from pprint import pformat
+import json
 
 logger = getLogger('django.request')
 
@@ -34,5 +35,13 @@ def dump(request):
     """
     Dumps a list of all the supporters.
     """
+    output = "["
     supporters = Supporter.query().fetch()
-    return HttpResponse(pformat(supporters).replace('\n', '<br/>'))
+    for x in range(0,len(supporters)):
+       del supporters[x].date_created
+       output +=json.dumps(supporters[x].to_dict())
+       if x==(len(supporters)-1):
+         output +="]"
+       else:
+         output+=", "
+    return HttpResponse(output)
