@@ -13,14 +13,14 @@ def send(request):
     """
     Send mail to all contacts of author. Include a link to document x.
     """
-    email = request.POST['email']
-    content_id = request.POST.get('content_id', default='0')
+    author_email = request.POST['author_email']
+    content_id = int(request.POST.get('content_id', default='0'))
 
     # Get the Author and content.
     #author = Author.query(name = author_name).fetch()
-    author = Author.query(Author.email == email).get()
+    author = Author.query(Author.email == author_email).get()
     if (author is None): 
-        return HttpResponseServerError("Author %s not found" % author_id)
+        return HttpResponseServerError("Author %s not found" % author_email)
     content_key = ndb.Key(Content, content_id)
     content = content_key.get()
     if (content is None): 
@@ -39,14 +39,15 @@ def send(request):
 
     # Send email.
     subject = "Test email"
-    message = "Test message"
+    message = """You have received a message. Please click on the following link\n
+    https://mail-safe.appspot.com/doc/%s"""
     from_email = "gdbelvin@wisebold.com"
     # Each element of datatuple is of the format: 
     # (subject, message, from_email, recipient_list)
-    datatuple = tuple([(subject, message, from_email, [link['email']]) for link in links])
+    datatuple = tuple([(subject, message % link['uuid'], from_email, [link['email']]) for link in links])
     mail.send_mass_mail(datatuple, fail_silently=False)
 
-    return HttpResponse("sent %d emails. <br> for %s to %s" % (len(datatuple), author.name, content.key))
+    return HttpResponse("sent %d emails. <br> On behalf of %s for doc %s to %s" % (len(datatuple), author.name, content.key, datatuple))
 
 def test(request, text):
     """
