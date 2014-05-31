@@ -32,12 +32,12 @@ def dump(result):
     contents = Content.query().fetch()
     return HttpResponse(pformat(contents).replace('\n', '<br/>'))
 
-def get(request, link_id, sms_code):
+def get(request, link_id, auth_code):
     link = ndb.Key(Link, int(link_id)).get()
     doc_id = int(link.content_id)
     doc = ndb.Key(Content, doc_id).get()
-    db_sms_code = link.code
-    if(sms_code != db_sms_code):
+    db_auth_code = link.code
+    if(auth_code != db_auth_code):
         return HttpResponse("", None, 403) #Unauthorized
     return HttpResponse("%s %s" % (doc_id, doc))
     
