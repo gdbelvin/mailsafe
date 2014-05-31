@@ -29,7 +29,8 @@ def create(request):
 
 def get(request, text):
     supporter = ndb.Key(Supporter, int(text)).get()
-    return HttpResponse(supporter)
+    del supporters[x].date_created
+    return HttpResponse(json.dumps(supporters[x].to_dict()))
 
 def dump(request):
     """

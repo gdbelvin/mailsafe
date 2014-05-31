@@ -5,6 +5,7 @@ from django.utils.log import getLogger
 from google.appengine.ext import ndb
 from models import Author
 from pprint import pformat
+import json
 
 logger = getLogger('django.request')
 
@@ -31,5 +32,13 @@ def dump(request):
     """
     Dumps a list of all the authors
     """
+
+    output = "["
     authors = Author.query().fetch()
-    return HttpResponse(pformat(authors).replace('\n', '<br/>'))
+    for x in range(0,len(authors)):
+       output +=json.dumps(authors[x].to_dict())
+       if x==(len(authors)-1):
+         output +="]"
+       else:
+         output+=", "
+    return HttpResponse(output)
