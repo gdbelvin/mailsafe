@@ -27,8 +27,8 @@ def create(request):
 
     return HttpResponse("Created a supporter: %s" % (supporter))
 
-def get(request, text):
-    supporter = ndb.Key(Supporter, int(text)).get()
+def get(request, email):
+    supporter = Author.query(Author.email == email).get()
     return HttpResponse(supporter)
 
 def dump(request):
