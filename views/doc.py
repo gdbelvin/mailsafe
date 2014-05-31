@@ -16,10 +16,10 @@ def create(request):
     """
     Create a document.
     """
-    email = int(request.POST["email"]) # email of author
+    author_email = request.POST["author_email"]
     text = request.POST["text"]
 
-    author = Author.query(Author.email == email).get()
+    author = Author.query(Author.email == author_email).get()
     if (author is None):
         return HttpResponseServerError("Author %s not found" % author_id)
     content = Content(author=author.key, text=text)

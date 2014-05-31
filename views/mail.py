@@ -14,7 +14,7 @@ def send(request):
     Send mail to all contacts of author. Include a link to document x.
     """
     email = request.POST['email']
-    content_id = int(request.POST.get('content_id', default='0'))
+    content_id = request.POST.get('content_id', default='0')
 
     # Get the Author and content.
     #author = Author.query(name = author_name).fetch()

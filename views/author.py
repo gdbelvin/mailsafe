@@ -13,9 +13,9 @@ def create(request):
     Create an author.
     """
     name = request.POST["name"]
-    email = request.POST["email"]
+    author_email = request.POST["author_email"]
 
-    author = Author(name=name, email=email)
+    author = Author(name=name, email=author_email)
     author_id = author.put()
 
     return HttpResponse("Created an author: %s" % (pformat(author)))
