@@ -11,16 +11,15 @@ from pprint import pformat
 
 logger = getLogger('django.request')
 
+# TODO: support uploading files.
 def create(request):
     """
     Create a document.
     """
-    author_id = int(request.POST["author_id"])
+    email = int(request.POST["email"]) # email of author
     text = request.POST["text"]
-    # TODO: support uploading files.
 
-    author_key = ndb.Key(Author, author_id)
-    author = author_key.get()
+    author = Author.query(Author.email == email).get()
     if (author is None):
         return HttpResponseServerError("Author %s not found" % author_id)
     content = Content(author=author.key, text=text)

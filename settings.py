@@ -12,6 +12,8 @@ AUTOLOAD_SITECONF = 'indexes'
 
 SECRET_KEY = '=r-$b*8hglm+858&9t043hlm6-&6-3d3vfc4((7yd0dbrakhvi'
 
+DEBUG = True
+
 # Twilio test credentials
 #ACCOUNT_SID = "ACf555ba70a888322ce31c733bce3f7d78"
 #AUTH_TOKEN = "1e23989f42ae46409ea979ca8778e33e"

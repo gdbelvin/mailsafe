@@ -15,9 +15,9 @@ def create(request):
     name = request.POST["name"]
     phone = request.POST["phone"]
     email = request.POST["email"]
-    author_id = int(request.POST["author_id"])
-    author_key = ndb.Key(Author, author_id)
-    author = author_key.get()
+    author_email = int(request.POST["author_email"])
+
+    author = Author.query(Author.email == email).get()
     if (author is None): 
         return HttpResponseServerError("Author %s not found" % author_id)
 

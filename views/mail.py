@@ -13,14 +13,12 @@ def send(request):
     """
     Send mail to all contacts of author. Include a link to document x.
     """
-    author_id = int(request.POST.get('author_id', default='0'))
+    email = request.POST['email']
     content_id = int(request.POST.get('content_id', default='0'))
 
     # Get the Author and content.
     #author = Author.query(name = author_name).fetch()
-    author_key = ndb.Key(Author, author_id)
-    author = author_key.get()
-
+    author = Author.query(Author.email == email).get()
     if (author is None): 
         return HttpResponseServerError("Author %s not found" % author_id)
     content_key = ndb.Key(Content, content_id)
