@@ -4,7 +4,9 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanen
 from django.utils.log import getLogger
 from django.core import mail
 from google.appengine.ext import ndb
-from models import Link, Author, Content
+from models import Link, Author, Content, Supporter
+import uuid
+import sys
 
 logger = getLogger('django.request')
 
@@ -12,13 +14,14 @@ def send(request):
     """
     Send mail to all contacts of author. Include a link to document x.
     """
-    author_id = int(request.POST.get('name', default='0'))
-    content_id = int(request.POST.get('content', default='0'))
+    author_id = int(request.POST.get('author_id', default='0'))
+    content_id = int(request.POST.get('content_id', default='0'))
 
     # Get the Author and content.
     #author = Author.query(name = author_name).fetch()
     author_key = ndb.Key(Author, author_id)
     author = author_key.get()
+
     if (author is None): 
         return HttpResponseServerError("Author %s not found" % author_id)
     content_key = ndb.Key(Content, content_id)
@@ -27,15 +30,15 @@ def send(request):
         return HttpResponseServerError("Document %s not found" % content_id)
 
     # Get a list of all supporters for an author, possibly by group?
-    supporters = Supporter.query(of = author.key).fetch()
+    supporters = Supporter.query(Supporter.of == author.key).fetch()
 
     # Generate a list of links.
     links = []
     for supporter in supporters:
-        link = Link(uuid=uuid.uuid4(), supporter=supporter.key, content=content.key, 
+        link = Link(uuid=uuid.uuid4().get_hex(), supporter=supporter.key, content=content.key, 
                 compromised=False)
         link.put()  # This could be better done in batch mode
-        links.append({email:supporter.email, uuid:link.uuid})
+        links.append({"email":supporter.email, "uuid":link.uuid})
 
     # Send email.
     subject = "Test email"
@@ -46,9 +49,7 @@ def send(request):
     datatuple = tuple([(subject, message, from_email, [link['email']]) for link in links])
     mail.send_mass_mail(datatuple, fail_silently=False)
 
-    return HttpResponse("""sent %d emails. <br>
-    for %s
-    to %s""" % (len(datatuple), author.name, content.key))
+    return HttpResponse("sent %d emails. <br> for %s to %s" % (len(datatuple), author.name, content.key))
 
 def test(request, text):
     """
