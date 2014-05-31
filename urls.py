@@ -20,5 +20,9 @@ urlpatterns = patterns('',
     (r'^twiml/(.*)$', 'views.phone.twiml'),
     ('^admin/', include(admin.site.urls)),
     ('^author/create', 'views.author.create'),
-    ('^supporter/create', 'views.supporter.create')
+    ('^supporter/create', 'views.supporter.create'),
+    ('^link/create', 'views.link.create'),
+    (r'^author/(.*)$', 'views.author.get'),
+    (r'^supporter/(.*)$', 'views.supporter.get'),
+    (r'^link/(.*)$', 'views.link.get')
 )
