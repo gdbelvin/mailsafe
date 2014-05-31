@@ -39,7 +39,6 @@ def linkdump(result):
     links = Link.query().fetch()
     return HttpResponse(pformat(links).replace('\n', '<br/>'))
 
-
 def meta(request, link_id):
     link = Link.query(Link.uuid == link_id).get()
     if (link is None):

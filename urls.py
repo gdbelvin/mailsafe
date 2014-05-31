@@ -35,7 +35,7 @@ urlpatterns = patterns('',
     (r'^doc/create$', 'views.doc.create'),
     (r'^doc/dump$', 'views.doc.dump'), #DEBUG
     (r'^doc/(.*)/auth$', 'views.doc.auth'),
-    (r'^doc/(.*)/(.*)$', 'views.doc.get'), # doc/id/sms_code
+    (r'^doc/(.*)/(.*)$', 'views.doc.get'), # doc/id/auth_code
     (r'^doc/(.*)$', 'views.doc.meta'), # doc/id
     # Link
     (r'^link/dump$', 'views.doc.linkdump'), #DEBUG
