@@ -19,11 +19,19 @@ class UUIDProperty(ndb.StringProperty) :
 class Author(ndb.Model):
     name = ndb.TextProperty()
 
+<<<<<<< Updated upstream
 class Supporter(ndb.Model):
     name = ndb.TextProperty()
     email = ndb.TextProperty()
     phone = ndb.TextProperty()
     date_added = ndb.DateTimeProperty(auto_now_add=True)
+=======
+class Supporter(db.Model):
+    name = db.TextProperty()
+    email = db.EmailProperty()
+    phone = db.PhoneNumberProperty()
+    date_added = db.DateTimeProperty(auto_now_add=True)
+>>>>>>> Stashed changes
 
 class Content(ndb.Model):
     blob = ndb.BlobProperty()
@@ -31,6 +39,14 @@ class Content(ndb.Model):
 
 class Link(ndb.Model):
     link = UUIDProperty()
+<<<<<<< Updated upstream
     supporter_id = ndb.IntegerProperty()
     content_id = ndb.IntegerProperty()
     compromised = ndb.BooleanProperty()
+=======
+    supporter = db.ReferenceProperty(Supporter)
+    supporter_id = db.IntegerProperty()
+    content = db.ReferenceProperty(Content)
+    content_id = db.IntegerProperty()
+    compromised = db.BooleanProperty()
+>>>>>>> Stashed changes

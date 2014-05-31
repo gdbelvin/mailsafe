@@ -15,9 +15,14 @@ urlpatterns = patterns('',
     ('^$', 'django.views.generic.simple.direct_to_template', {'template': 'home.html'}),
     ('^d/.*$', 'django.views.generic.simple.direct_to_template', {'template': 'viewdoc.html'}),
     ('^v/.*$', 'django.views.generic.simple.direct_to_template', {'template': 'verifyid.html'}),
+
+    # Phone
     (r'^sms/(.*)$', 'views.phone.sms'),
     (r'^call/(.*)$', 'views.phone.call'),
     (r'^twiml/(.*)$', 'views.phone.twiml'),
+    # Mail
+    (r'^mail/(.*)$', 'views.mail.send'),
+
     ('^admin/', include(admin.site.urls)),
     ('^author/create', 'views.author.create'),
     ('^supporter/create', 'views.supporter.create'),

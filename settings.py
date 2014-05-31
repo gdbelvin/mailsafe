@@ -19,6 +19,7 @@ AUTH_TOKEN = "1e23989f42ae46409ea979ca8778e33e"
 ACCOUNT_SID = "AC6c969a1a163ccd6714bfd00779851194" 
 AUTH_TOKEN = "8ffe13c1959587d78ab5d1026038390dk"
 
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.contenttypes',
