@@ -2,10 +2,9 @@ from django.conf import settings
 from django.template import loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone
 from django.utils.log import getLogger
-
 from google.appengine.ext import ndb
-
 from models import Supporter
+from pprint import pformat
 
 logger = getLogger('django.request')
 
@@ -18,10 +17,17 @@ def create(request):
     email = request.POST["email"]
 
     supporter = Supporter(name=name, email=email, phone=phone)
-    supporter_id = supporter.put().id()
+    supporter.put()
 
-    return HttpResponse("Created an supporter: %s %s %s %s" % (name, phone, email, supporter_id))
+    return HttpResponse("Created a supporter: %s" % (supporter))
 
 def get(request, text):
     supporter = ndb.Key(Supporter, int(text)).get()
     return HttpResponse(supporter)
+
+def dump(request):
+    """
+    Dumps a list of all the supporters.
+    """
+    supporters = Supporter.query().fetch()
+    return HttpResponse(pformat(supporters).replace('\n', '<br/>'))
