@@ -3,14 +3,14 @@ from django.template import loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone, HttpResponseServerError
 from django.utils.log import getLogger
 from google.appengine.ext import ndb
-from models import Author, Content
+from models import Author, Content, Link, Supporter
 from pprint import pformat
 
 logger = getLogger('django.request')
 
-def upload(request):
+def create(request):
     """
-    upload a document.
+    Create a document.
     """
     author_id = int(request.POST["author_id"])
     text = request.POST["text"]
@@ -32,8 +32,18 @@ def dump(result):
     contents = Content.query().fetch()
     return HttpResponse(pformat(contents).replace('\n', '<br/>'))
 
-def get(request, text):
-    # TODO: implement
-    return HttpResponse("")
-
-
+def get(request, link_id, sms_code):
+    link = ndb.Key(Link, int(link_id)).get()
+    doc_id = int(link.content_id)
+    doc = ndb.Key(Content, doc_id).get()
+    db_sms_code = link.code
+    if(sms_code != db_sms_code):
+        return HttpResponse("", None, 403) #Unauthorized
+    return HttpResponse("%s %s" % (doc_id, doc))
+    
+def meta(request, link_id):
+    link = ndb.Key(Link, int(link_id)).get()
+    supporter_id = int(link.supporter_id)
+    supporter = ndb.Key(Supporter, supporter_id).get()
+    supporter_name = supporter.name
+    return HttpResponse(supporter.name)

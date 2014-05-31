@@ -24,6 +24,7 @@ class Link(ndb.Model):
     supporter = ndb.KeyProperty(kind=Supporter)
     content = ndb.KeyProperty(kind=Content)
     compromised = ndb.BooleanProperty()
+    code = ndb.StringProperty(default="1234")
 
     content_id = ndb.IntegerProperty()
     supporter_id = ndb.IntegerProperty()

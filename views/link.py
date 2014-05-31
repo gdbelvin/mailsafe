@@ -2,6 +2,7 @@ from django.conf import settings
 from django.template import loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone
 from django.utils.log import getLogger
+from pprint import pformat
 
 from google.appengine.ext import ndb
 
@@ -20,6 +21,13 @@ def create(request):
     link_id = link.put().id()
 
     return HttpResponse("Created an link: %s %s %s" % (content_id, supporter_id, link_id))
+
+def dump(result):
+    """
+    Dumps the contents of all links.
+    """
+    links = Link.query().fetch()
+    return HttpResponse(pformat(links).replace('\n', '<br/>'))
 
 def get(request, text):
     link = ndb.Key(Link, int(text)).get()

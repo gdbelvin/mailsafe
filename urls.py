@@ -24,21 +24,21 @@ urlpatterns = patterns('',
     # Mail
     (r'^mail/send$', 'views.mail.send'),
     # Author
-    (r'^author/create', 'views.author.create'),
-    (r'^author/dump', 'views.author.dump'),
+    (r'^author/create$', 'views.author.create'),
+    (r'^author/dump$', 'views.author.dump'),
     (r'^author/(.*)$', 'views.author.get'),
     # Supporter
-    (r'^supporter/create', 'views.supporter.create'),
-    (r'^supporter/dump', 'views.supporter.dump'),
+    (r'^supporter/create$', 'views.supporter.create'),
+    (r'^supporter/dump$', 'views.supporter.dump'),
     (r'^supporter/(.*)$', 'views.supporter.get'),
     # Doc
-    (r'^doc/upload', 'views.doc.upload'),
+    (r'^doc/create$', 'views.doc.create'),
     (r'^doc/dump$', 'views.doc.dump'), #DEBUG
-    (r'^doc/dump/(.*)$', 'views.doc.get'), #DEBUG
-
-    (r'^doc/(.*)/auth$', 'views.doc.auth'), 
-    (r'^doc/(.*)/(.*)$', 'views.doc.get'),
+    (r'^doc/(.*)/auth$', 'views.doc.auth'),
+    (r'^doc/(.*)/(.*)$', 'views.doc.get'), # doc/id/sms_code
+    (r'^doc/(.*)$', 'views.doc.meta'), # doc/id
     # Link
+    (r'^link/create$', 'views.link.create'),
+    (r'^link/dump$', 'views.link.dump'),
     (r'^link/(.*)$', 'views.link.get'),
-    (r'^link/create', 'views.link.create'),
 )
