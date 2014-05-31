@@ -6,7 +6,6 @@ from django.core import mail
 from google.appengine.ext import ndb
 from models import Link, Author, Content, Supporter
 import uuid
-import sys
 
 logger = getLogger('django.request')
 

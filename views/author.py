@@ -20,9 +20,12 @@ def create(request):
 
     return HttpResponse("Created an author: %s" % (pformat(author)))
 
-def get(request, text):
-    author = ndb.Key(Author, int(text)).get()
-    return HttpResponse(author)
+def get(request, email):
+    author = Author.query(Author.email == email).get()
+    if (author is None):
+        return HttpResponseServerError()
+    else:
+        return HttpResponse(author)
 
 def dump(request):
     """

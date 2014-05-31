@@ -38,7 +38,5 @@ urlpatterns = patterns('',
     (r'^doc/(.*)/(.*)$', 'views.doc.get'), # doc/id/sms_code
     (r'^doc/(.*)$', 'views.doc.meta'), # doc/id
     # Link
-    (r'^link/create$', 'views.link.create'),
-    (r'^link/dump$', 'views.link.dump'),
-    (r'^link/(.*)$', 'views.link.get'),
+    (r'^link/dump$', 'views.doc.linkdump'), #DEBUG
 )
