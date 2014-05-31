@@ -27,8 +27,10 @@ class Supporter(db.Model):
     phone = db.TextProperty()
     date_added = db.DateTimeProperty(auto_now_add=True)
 
+class Content(db.Model):
+    blob = db.BlobProperty();
+
 class Link(db.Model):
     link = db.GUIDProperty()
-    content_id = db.IntegerProperty()
-    supporter = db.IntegerProperty()
-    compromised = db.BoolProperty()
+    supporter_id = models.ForeignKey(Supporter)
+    content_id = models.ForeignKey(Content)
