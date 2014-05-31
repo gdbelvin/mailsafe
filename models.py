@@ -3,12 +3,10 @@ from django.db import models
 from google.appengine.ext import db
 import uuid
 
-class UUIDProperty(models.CharProperty) :
+class UUIDProperty(db.StringProperty) :
     
     def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = kwargs.get('max_length', 64 )
-        kwargs['blank'] = True
-        models.CharField.__init__(self, *args, **kwargs)
+        db.StringProperty.__init__(self, *args, **kwargs)
     
     def pre_save(self, model_instance, add):
         if add :
@@ -16,7 +14,7 @@ class UUIDProperty(models.CharProperty) :
             setattr(model_instance, self.attname, value)
             return value
         else:
-            return super(models.CharProperty, self).pre_save(model_instance, add)
+            return super(db.StringProperty, self).pre_save(model_instance, add)
 
 class Author(db.Model):
     name = db.TextProperty()
@@ -27,8 +25,12 @@ class Supporter(db.Model):
     phone = db.TextProperty()
     date_added = db.DateTimeProperty(auto_now_add=True)
 
+class Content(db.Model):
+    text = db.TextProperty()
+    blob = db.BlobProperty()
+
 class Link(db.Model):
-    link = db.GUIDProperty()
-    content_id = db.IntegerProperty()
+    link = UUIDProperty()
+    content = db.IntegerProperty()
     supporter = db.IntegerProperty()
-    compromised = db.BoolProperty()
+    compromised = db.BooleanProperty()
