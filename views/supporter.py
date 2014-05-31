@@ -27,9 +27,16 @@ def create(request):
 
     return HttpResponse("Created a supporter: %s" % (supporter))
 
+<<<<<<< HEAD
 def get(request, email):
     supporter = Author.query(Author.email == email).get()
     return HttpResponse(supporter)
+=======
+def get(request, text):
+    supporter = ndb.Key(Supporter, int(text)).get()
+    del supporters[x].date_created
+    return HttpResponse(json.dumps(supporters[x].to_dict()))
+>>>>>>> d7fcb61adbc05620854949dc838269eb39aa6511
 
 def dump(request):
     """

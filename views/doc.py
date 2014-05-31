@@ -8,6 +8,7 @@ from twilio.rest import TwilioRestClient
 from random import SystemRandom
 import datetime
 from pprint import pformat
+import json
 
 logger = getLogger('django.request')
 
@@ -31,8 +32,15 @@ def dump(result):
     """
     Dumps the contents of all documents.
     """
+    output = "["
     contents = Content.query().fetch()
-    return HttpResponse(pformat(contents).replace('\n', '<br/>'))
+    for x in range(0,len(contents)):
+       output +=json.dumps(contents[x].to_dict())
+       if x==(len(contents)-1):
+         output +="]"
+       else:
+         output+=", "
+    return HttpResponse(output)
 
 def linkdump(result):
     links = Link.query().fetch()
