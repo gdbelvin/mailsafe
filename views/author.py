@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.template import loader, RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone, HttpResponseServerError, HttpResponseNotFound
 from django.utils.log import getLogger
 from google.appengine.ext import ndb
 from models import Author
@@ -24,7 +24,7 @@ def create(request):
 def get(request, email):
     author = Author.query(Author.email == email).get()
     if (author is None):
-        return HttpResponseServerError()
+        return HttpResponseNotFound()
     else:
         return HttpResponse(author)
 

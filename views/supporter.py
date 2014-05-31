@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.template import loader, RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone, HttpResponseServerError, HttpResponseNotFound
 from django.utils.log import getLogger
 from google.appengine.ext import ndb
 from models import Supporter, Author
@@ -27,16 +27,12 @@ def create(request):
 
     return HttpResponse("Created a supporter: %s" % (supporter))
 
-<<<<<<< HEAD
 def get(request, email):
     supporter = Author.query(Author.email == email).get()
-    return HttpResponse(supporter)
-=======
-def get(request, text):
-    supporter = ndb.Key(Supporter, int(text)).get()
+    if (supporter is None):
+        return HttpResponseNotFound()
     del supporters[x].date_created
     return HttpResponse(json.dumps(supporters[x].to_dict()))
->>>>>>> d7fcb61adbc05620854949dc838269eb39aa6511
 
 def dump(request):
     """
