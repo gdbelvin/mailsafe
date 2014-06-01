@@ -39,10 +39,10 @@ def send(request):
 
     # Send email.
     subject = "A MailSafe Message From %s" % author.name
-    message = """Dear %s,\n\n
-    You have received a message from %s through MailSafe. Please click on the following link to view their message:\n\n
-    https://mail-safe.appspot.com/doc/%s\n\n
-    The MailSafe Team"""
+    message = """Dear %s,\n
+You have received a message from %s through MailSafe. Please click on the following link to view their message:\n
+https://mail-safe.appspot.com/doc/%s\n
+The MailSafe Team"""
     from_email = "gdbelvin@wisebold.com"
 
     # Each element of datatuple is of the format: 
