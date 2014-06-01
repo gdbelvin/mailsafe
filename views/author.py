@@ -15,9 +15,13 @@ def create(request):
     name = request.POST["author_name"]
     author_email = request.POST["author_email"]
 
-    author = Author(name=name, email=author_email)
-    author_id = author.put()
-
+    author = Author.query(Author.email == author_email).get()
+    if (author is None):
+        author = Author(name=name, email=author_email)
+    else:
+        author.name = name
+        
+    author.put()
     return HttpResponse(json_fixed.dumps(author))
 
 def get(request, author_email):
