@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     # Supporter
     (r'^supporter/create$', 'views.supporter.create'),
     (r'^supporter/dump$', 'views.supporter.dump'),
-    (r'^supporter/(.*)$', 'views.supporter.get'),
+    (r'^supporter/(.*)$', 'views.supporter.rest'), # POST, DELETE, GET
     # Doc
     (r'^doc/create$', 'views.doc.create'),
     (r'^doc/dump$', 'views.doc.dump'), #DEBUG

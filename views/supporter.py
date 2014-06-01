@@ -9,9 +9,6 @@ import json_fixed
 logger = getLogger('django.request')
 
 def create(request):
-    """
-    Create an supporter.
-    """
     name = request.POST["name"]
     phone = request.POST["phone"]
     email = request.POST["email"]
@@ -21,26 +18,46 @@ def create(request):
     if (author is None): 
         return HttpResponseServerError("Author %s not found" % author_email)
     
+    supporter = Supporter(name=name, email=email, phone=phone, of=[author.key])
+    supporter.put()
+    return HttpResponse(json_fixed.dumps(supporter))
+
+def update(request, author_email):
+    name = request.POST["name"]
+    phone = request.POST["phone"]
+    email = request.POST["email"]
+
     supporter = Supporter.query(Supporter.email == email).get()
-    if(supporter is None):
-        supporter = Supporter(name=name, email=email, phone=phone, of=[author.key])
-    else:
-        supporter.name = name
-        supporter.email = email
-        supporter.phone = phone
-        
+    if (supporter is None):
+        return HttpResponseNotFound()
+
+    supporter.name = name
+    supporter.email = email
+    supporter.phone = phone
     supporter.put()
     return HttpResponse(json_fixed.dumps(supporter))
 
 def get(request, email):
-    supporter = Author.query(Author.email == email).get()
+    supporter = Supporter.query(Supporter.email == email).get()
     if (supporter is None):
         return HttpResponseNotFound()
     return HttpResponse(json_fixed.dumps(supporter))
 
+def delete(request, email):
+    supporter = Supporter.query(Supporter.email == email).get()
+    if (supporter is None):
+        return HttpResponseNotFound()
+    supporter.key.delete()
+    return HttpResponse(json_fixed.dumps(supporter))
+
 def dump(request):
-    """
-    Dumps a list of all the supporters.
-    """
     supporters = Supporter.query().fetch()
     return HttpResponse(json_fixed.dumps(supporters))
+
+def rest(request, email):
+    if request.method == 'POST':
+        return update(request, email)
+    elif request.method == 'GET':
+        return get(request, email)
+    elif request.method == 'DELETE':
+        return delete(request, email)
