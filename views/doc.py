@@ -20,11 +20,12 @@ def create(request):
     """
     author_email = request.POST["author_email"]
     text = request.POST["text"]
+    subject = request.POST["subject"]
 
     author = Author.query(Author.email == author_email).get()
     if (author is None):
         return HttpResponseServerError("Author %s not found" % author_id)
-    content = Content(author=author.key, text=text)
+    content = Content(author=author.key, text=text, subject=subject)
     content.put()
 
     resp = content.to_dict()
@@ -58,8 +59,9 @@ def generate_code(link):
     # Generate new code and timestamp.
     # Saves code to AuthCode table
     code_len = 5
+    code_duration = 5
     code = str(SystemRandom().randint(0, 10**code_len)).zfill(code_len)
-    timeout = datetime.datetime.now() + datetime.timedelta(minutes = 5)
+    timeout = datetime.datetime.now() + datetime.timedelta(minutes = code_duration)
     # Try to update
     auth_code = AuthCode.query(AuthCode.uuid == link.key).get()
     if (auth_code is None):
@@ -138,4 +140,4 @@ def get(request, link_id, sms_code):
     content = link.content.get()
     if (content is None):
         return HttpResponseServerError("bad link")
-    return HttpResponse(content.text)
+    return HttpResponse(json_fixed.dumps(content))

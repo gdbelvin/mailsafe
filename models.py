@@ -15,6 +15,7 @@ class Supporter(ndb.Model):
 
 class Content(ndb.Model):
     blob = ndb.BlobProperty()
+    subject = ndb.StringProperty()
     text = ndb.TextProperty()
     author = ndb.KeyProperty(kind=Author)
 
