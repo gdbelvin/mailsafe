@@ -27,19 +27,13 @@ def create(request):
     content = Content(author=author.key, text=text, subject=subject,
             status="draft")
     content.put()
-
-    resp = content.to_dict()
-    resp['content_id'] = content.key.id()
-    return HttpResponse(json_fixed.dumps(resp))
+    return HttpResponse(json_fixed.dumps(content))
 
 def get(request, content_id):
     content = ndb.Key(Content, int(content_id)).get()
     if (content is None):
         return HttpResponseNotFound("No doc found.")
-
-    resp = content.to_dict()
-    resp['content_id'] = content.key.id()
-    return HttpResponse(json_fixed.dumps(resp))
+    return HttpResponse(json_fixed.dumps(content))
 
 def update(request, content_id):
     author_email = request.POST["author_email"]
