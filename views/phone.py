@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone, HttpResponseServerError
 from django.utils.log import getLogger
 from models import Author, Content, Link, Supporter, AuthCode
 from random import SystemRandom
@@ -59,15 +59,16 @@ def call_phone(link, supporter):
     ) 
 
 def auth(request, uuid):
+    method = request.POST["method"]
     link = Link.query(Link.uuid == uuid).get()
     if (link is None):
         return HttpResponseServerError("bad link")
     supporter = link.supporter.get()
     if (supporter is None):
         return HttpResponseServerError("bad link")
-    if False:
+    if (method == "sms"):
         send_sms(link, supporter)
     else:
         call_phone(link, supporter)
 
-    return HttpResponse("Auth Sent") #Auth Sent
+    return HttpResponse("Auth Sent")
