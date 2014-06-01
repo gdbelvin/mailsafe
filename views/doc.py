@@ -7,8 +7,7 @@ from models import Author, Content, Link, Supporter, AuthCode
 from twilio.rest import TwilioRestClient 
 from random import SystemRandom
 import datetime
-from pprint import pformat
-import json
+import json_fixed
 
 logger = getLogger('django.request')
 
@@ -26,25 +25,18 @@ def create(request):
     content = Content(author=author.key, text=text)
     content.put()
 
-    return HttpResponse("Created a document: %s" % (content))
+    return HttpResponse(json_fixed.dumps(content))
 
 def dump(result):
     """
     Dumps the contents of all documents.
     """
-    output = "["
     contents = Content.query().fetch()
-    for x in range(0,len(contents)):
-       output +=json.dumps(contents[x].to_dict())
-       if x==(len(contents)-1):
-         output +="]"
-       else:
-         output+=", "
-    return HttpResponse(output)
+    return HttpResponse(json_fixed.dumps(contents))
 
 def linkdump(result):
     links = Link.query().fetch()
-    return HttpResponse(pformat(links).replace('\n', '<br/>'))
+    return HttpResponse(json_fixed.dumps(links))
 
 def meta(request, link_id):
     link = Link.query(Link.uuid == link_id).get()
@@ -83,7 +75,7 @@ def auth(request, link_id):
             from_="+14158892387", 
             body=code,  
     )
-    return HttpResponse("") #Auth Sent
+    return HttpResponse("Auth Sent") #Auth Sent
     
 def get(request, link_id, sms_code):
     link = Link.query(Link.uuid == link_id).get()

@@ -4,8 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanen
 from django.utils.log import getLogger
 from google.appengine.ext import ndb
 from models import Supporter, Author
-from pprint import pformat
-import json
+import json_fixed
 
 logger = getLogger('django.request')
 
@@ -25,26 +24,17 @@ def create(request):
     supporter = Supporter(name=name, email=email, phone=phone, of=[author.key])
     supporter.put()
 
-    return HttpResponse("Created a supporter: %s" % (supporter))
+    return HttpResponse(json_fixed.dumps(supporter))
 
 def get(request, email):
     supporter = Author.query(Author.email == email).get()
     if (supporter is None):
         return HttpResponseNotFound()
-    del supporters[x].date_created
-    return HttpResponse(json.dumps(supporters[x].to_dict()))
+    return HttpResponse(json_fixed.dumps(supporter))
 
 def dump(request):
     """
     Dumps a list of all the supporters.
     """
-    output = "["
     supporters = Supporter.query().fetch()
-    for x in range(0,len(supporters)):
-       del supporters[x].date_created
-       output +=json.dumps(supporters[x].to_dict())
-       if x==(len(supporters)-1):
-         output +="]"
-       else:
-         output+=", "
-    return HttpResponse(output)
+    return HttpResponse(json_fixed.dumps(supporters))
