@@ -34,9 +34,11 @@ urlpatterns = patterns('',
     # Doc
     (r'^doc/create$', 'views.doc.create'),
     (r'^doc/dump$', 'views.doc.dump'), #DEBUG
-    # Link
-    (r'^doc/(.*)/auth$', 'views.phone.auth'),
-    (r'^doc/(.*)/(.*)$', 'views.doc.get'), # doc/id/auth_code
-    (r'^doc/(.*)$', 'views.doc.meta'), # doc/id
-    (r'^link/dump$', 'views.doc.linkdump'), #DEBUG
+    (r'^doc/(.*)/delete$', 'views.doc.delete'),
+    (r'^doc/(.*)$', 'views.doc.update'),
+    # Letter - obfuscated links
+    (r'^letter/(.*)/auth$', 'views.phone.auth'),
+    (r'^letter/(.*)/(.*)$', 'views.doc.get'), # doc/id/auth_code
+    (r'^letter/(.*)$', 'views.doc.meta'), # doc/id
+    (r'^letter/dump$', 'views.doc.linkdump'), #DEBUG
 )

@@ -8,6 +8,22 @@ import twilio.twiml
 
 logger = getLogger('django.request')
 
+def generate_code(link):
+    # Generate new code and timestamp.
+    # Saves code to AuthCode table
+    code_len = 5
+    code_duration = 5 # Minutes.
+    code = str(SystemRandom().randint(0, 10**code_len)).zfill(code_len)
+    timeout = datetime.datetime.now() + datetime.timedelta(minutes = code_duration)
+    # Try to update
+    auth_code = AuthCode.query(AuthCode.uuid == link.key).get()
+    if (auth_code is None):
+        auth_code = AuthCode(uuid=link.key)
+    auth_code.code = code
+    auth_code.timeout=timeout
+    auth_code.put()
+    return code
+
 def send_sms(link, supporter, code):
     code = generate_code(link)
     client = TwilioRestClient(settings.ACCOUNT_SID, settings.AUTH_TOKEN) 
