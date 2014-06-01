@@ -20,7 +20,6 @@ urlpatterns = patterns('',
     # Twilio callbacks
     (r'^twiml/(.*)$', 'views.phone.gen_twiml'),
     # Mail
-    (r'^mail/send$', 'views.mail.send'),
     # Author
     (r'^author/create$', 'views.author.create'),
     (r'^author/dump$', 'views.author.dump'),
@@ -34,11 +33,11 @@ urlpatterns = patterns('',
     # Doc
     (r'^doc/create$', 'views.doc.create'),
     (r'^doc/dump$', 'views.doc.dump'), #DEBUG
-    (r'^doc/(.*)/delete$', 'views.doc.delete'),
-    (r'^doc/(.*)$', 'views.doc.update'),
+    (r'^doc/(.*)$', 'views.doc.rest'), # POST, DELETE, GET
+    (r'^doc/(.*)/send$', 'views.doc.send'),
     # Letter - obfuscated links
     (r'^letter/(.*)/auth$', 'views.phone.auth'),
-    (r'^letter/(.*)/(.*)$', 'views.doc.get'), # doc/id/auth_code
-    (r'^letter/(.*)$', 'views.doc.meta'), # doc/id
-    (r'^letter/dump$', 'views.doc.linkdump'), #DEBUG
+    (r'^letter/(.*)/(.*)$', 'views.letter.get'), # doc/id/auth_code
+    (r'^letter/(.*)$', 'views.letter.meta'), # doc/id
+    (r'^letter/dump$', 'views.letter.linkdump'), #DEBUG
 )
