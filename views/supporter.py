@@ -20,10 +20,16 @@ def create(request):
     author = Author.query(Author.email == email).get()
     if (author is None): 
         return HttpResponseServerError("Author %s not found" % author_email)
-
-    supporter = Supporter(name=name, email=email, phone=phone, of=[author.key])
+    
+    supporter = Author.query(Author.email == email).get()
+    if(supporter is None):
+        supporter = Supporter(name=name, email=email, phone=phone, of=[author.key])
+    else:
+        supporter.name = name
+        supporter.email = email
+        supporter.phone = phone
+        
     supporter.put()
-
     return HttpResponse(json_fixed.dumps(supporter))
 
 def get(request, email):

@@ -24,14 +24,23 @@ def create(request):
     author = Author.query(Author.email == author_email).get()
     if (author is None):
         return HttpResponseServerError("Author %s not found" % author_id)
-    content = Content(author=author.key, text=text, subject=subject)
-    content.put()
 
-    resp = content.to_dict()
-    resp['content_id'] = content.key.id()
-    del resp['author']
+    if (request.POST.__contains__("content_id")):
+        content_id = request.POST["content_id"]
+        content = ndb.Key(Content, int(content_id)).get()
+        content.subject = subject
+        content.text = text
+        content.put()
+        return HttpResponse(json_fixed.dumps(content))
+    else:
+        content = Content(author=author.key, text=text, subject=subject)
+        content.put()
 
-    return HttpResponse(json.dumps(resp))
+        resp = content.to_dict()
+        resp['content_id'] = content.key.id()
+        del resp['author']
+
+        return HttpResponse(json.dumps(resp))
 
 def dump(result):
     """
