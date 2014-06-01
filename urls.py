@@ -26,6 +26,8 @@ urlpatterns = patterns('',
     # Author
     (r'^author/create$', 'views.author.create'),
     (r'^author/dump$', 'views.author.dump'),
+    (r'^author/(.*)/supporters$', 'views.author.get_supporters'), 
+    (r'^author/(.*)/documents$', 'views.author.get_documents'), 
     (r'^author/(.*)$', 'views.author.get'),
     # Supporter
     (r'^supporter/create$', 'views.supporter.create'),
