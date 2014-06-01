@@ -12,6 +12,7 @@ AUTOLOAD_SITECONF = 'indexes'
 
 SECRET_KEY = '=r-$b*8hglm+858&9t043hlm6-&6-3d3vfc4((7yd0dbrakhvi'
 
+SERVER = 'http://mail-safe.appspot.com'
 DEBUG = True
 
 # Twilio test credentials
