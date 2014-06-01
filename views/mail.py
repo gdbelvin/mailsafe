@@ -38,16 +38,16 @@ def send(request):
         links.append({"email":supporter.email, "uuid":link.uuid, "supporter_name":supporter.name})
 
     # Send email.
-    subject = "Test email"
+    subject = "A MailSafe Message From %s" % author.name
     message = """Dear %s,\n\n
     You have received a message from %s through MailSafe. Please click on the following link to view their message:\n\n
     https://mail-safe.appspot.com/doc/%s\n\n
-    The MailSafe Team""" % (link['supporter_name'], author.name, link['uuid'])
+    The MailSafe Team"""
     from_email = "gdbelvin@wisebold.com"
 
     # Each element of datatuple is of the format: 
     # (subject, message, from_email, recipient_list)
-    datatuple = tuple([(subject, message , from_email, [link['email']]) for link in links])
+    datatuple = tuple([(subject, message % (link['supporter_name'], author.name, link['uuid']), from_email, [link['email']]) for link in links])
     mail.send_mass_mail(datatuple, fail_silently=False)
 
     return HttpResponse("sent %d emails on behalf of %s for doc %s to %s" % (len(datatuple), author.name, content.key, datatuple))
