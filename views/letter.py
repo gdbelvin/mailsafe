@@ -20,17 +20,20 @@ def get(request, link_id, sms_code):
     authcode = AuthCode.query(AuthCode.uuid == link.key).get()
     if (authcode is None):
         return HttpResponseServerError("bad link")
-    
+            
+    content = link.content.get()
+    if(content.state != "published"):
+        return HttpResponseServerError("deactivated link")
+
     # Verify code
     if (sms_code != authcode.code):
-        return HttpResponse("bad code: %s" % authcode.code, None, 403) #Unauthorized
+        return HttpResponse("bad code", None, 403) #Unauthorized
 
     # check timestamp
     now = datetime.datetime.now()
     if (now > authcode.timeout):
         return HttpResponse("timeout", None, 403) #Unauthorized
 
-    content = link.content.get()
     if (content is None):
         return HttpResponseServerError("bad link")
     return HttpResponse(json_fixed.dumps(content))

@@ -59,16 +59,16 @@ def call_phone(link, supporter):
     ) 
 
 def auth(request, uuid):
-    method = request.POST["method"]
+    method = request.POST.get("method")
     link = Link.query(Link.uuid == uuid).get()
     if (link is None):
         return HttpResponseServerError("bad link")
     supporter = link.supporter.get()
     if (supporter is None):
         return HttpResponseServerError("bad link")
-    if (method == "sms"):
-        send_sms(link, supporter)
-    else:
+    if (method == "phone"):
         call_phone(link, supporter)
+    else:
+        send_sms(link, supporter)
 
     return HttpResponse("Auth Sent")
