@@ -10,6 +10,7 @@ from random import SystemRandom
 import datetime
 import json_fixed
 import json
+import uuid
 
 logger = getLogger('django.request')
 
@@ -29,7 +30,15 @@ def create(request):
 
     resp = content.to_dict()
     resp['content_id'] = content.key.id()
+    return HttpResponse(json_fixed.dumps(resp))
 
+def get(request, content_id):
+    content = ndb.Key(Content, int(content_id)).get()
+    if (content is None):
+        return HttpResponseNotFound("No doc found.")
+
+    resp = content.to_dict()
+    resp['content_id'] = content.key.id()
     return HttpResponse(json_fixed.dumps(resp))
 
 def update(request, content_id):
@@ -56,49 +65,56 @@ def delete(request, content_id):
     content = ndb.Key(Content, int(content_id)).get()
     if (content is None):
         return HttpResponseNotFound("No doc found.")
-    content.delete()
+    content.key.delete()
     return HttpResponse()
 
 def dump(result):
     docs = Content.query().fetch()
     return HttpResponse(json_fixed.dumps(docs))
 
-def linkdump(result):
-    links = Link.query().fetch()
-    return HttpResponse(json_fixed.dumps(links))
+def rest(request, content_id):
+    if request.method == 'POST':
+        return update(request, content_id)
+    elif request.method == 'GET':
+        return get(request, content_id)
+    elif request.method == 'DELETE':
+        return delete(request, content_id)
 
-def meta(request, link_id):
-    link = Link.query(Link.uuid == link_id).get()
-    if (link is None):
-        return HttpResponseServerError("bad link")
-    supporter = link.supporter.get()
-    if (supporter is None):
-        return HttpResponseServerError("bad link")
-    supporter_name = supporter.name
-    return HttpResponse(supporter.name)
+def send(request, content_id):
+    """
+    Send mail to all contacts of author. Include a link to document x.
+    """
+    content_key = ndb.Key(Content, int(content_id))
+    content = content_key.get()
+    if (content is None): 
+        return HttpResponseServerError("Document %s not found" % content_id)
 
-def get(request, link_id, sms_code):
-    dlink = Link.query(Link.uuid == link_id).get()
-    if (link is None):
-        return HttpResponseServerError("bad link")
+    author = content.author.get()
+    if (author is None): 
+        return HttpResponseServerError("Author %s not found" % author_email)
 
-    authcode = AuthCode.query(AuthCode.uuid == link.key).get()
-    if (authcode is None):
-        return HttpResponseServerError("bad link")
-        
-    content = link.content.get()
-    if(content.state != "published"):
-        return HttpResponseServerError("deactivated link")
+    supporters = Supporter.query(Supporter.of == author.key).fetch()
 
-    # Verify code
-    if (sms_code != authcode.code):
-        return HttpResponse("bad code: %s", None, 403) #Unauthorized
+    # Generate a list of links.
+    links = []
+    for supporter in supporters:
+        link = Link(uuid=uuid.uuid4().get_hex(), supporter=supporter.key, content=content.key, 
+                compromised=False)
+        link.put()  # This could be better done in batch mode
+        links.append({"email":supporter.email, "uuid":link.uuid, "supporter_name":supporter.name})
 
-    # check timestamp
-    now = datetime.datetime.now()
-    if (now > authcode.timeout):
-        return HttpResponse("timeout", None, 403) #Unauthorized
+    # Send email.
+    subject = "A MailSafe Message From %s" % author.name
+    message = """Dear %s,\n
+You have received a message from %s through MailSafe. Please click on the following link to view their message:\n
+https://mail-safe.appspot.com/doc/%s\n
+https://mailsafe.herokuapp.com/public/letter/%s\n
+The MailSafe Team"""
+    from_email = "gdbelvin@wisebold.com"
 
-    if (content is None):
-        return HttpResponseServerError("bad link")
-    return HttpResponse(json_fixed.dumps(content))
+    # Each element of datatuple is of the format: 
+    # (subject, message, from_email, recipient_list)
+    datatuple = tuple([(subject, message % (link['supporter_name'], author.name, link['uuid'], link['uuid']), from_email, [link['email']]) for link in links])
+    mail.send_mass_mail(datatuple, fail_silently=False)
+
+    return HttpResponse("sent %d emails on behalf of %s for doc %s to %s" % (len(datatuple), author.name, content.key, datatuple))
