@@ -11,6 +11,8 @@ import datetime
 import json_fixed
 import json
 import uuid
+from django.core import mail
+from google.appengine.ext import ndb
 
 logger = getLogger('django.request')
 

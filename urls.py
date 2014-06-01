@@ -33,11 +33,11 @@ urlpatterns = patterns('',
     # Doc
     (r'^doc/create$', 'views.doc.create'),
     (r'^doc/dump$', 'views.doc.dump'), #DEBUG
-    (r'^doc/(.*)$', 'views.doc.rest'), # POST, DELETE, GET
     (r'^doc/(.*)/send$', 'views.doc.send'),
+    (r'^doc/(.*)$', 'views.doc.rest'), # POST, DELETE, GET
     # Letter - obfuscated links
+    (r'^letter/dump$', 'views.letter.linkdump'), #DEBUG
     (r'^letter/(.*)/auth$', 'views.phone.auth'),
     (r'^letter/(.*)/(.*)$', 'views.letter.get'), # doc/id/auth_code
     (r'^letter/(.*)$', 'views.letter.meta'), # doc/id
-    (r'^letter/dump$', 'views.letter.linkdump'), #DEBUG
 )
