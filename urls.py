@@ -17,10 +17,6 @@ urlpatterns = patterns('',
     ('^v/.*$', 'django.views.generic.simple.direct_to_template', {'template': 'verifyid.html'}),
     ('^admin/', include(admin.site.urls)),
 
-    # Phone
-    (r'^phonse/sms/(.*)$', 'views.phone.sms'),
-    (r'^phone/call/(.*)$', 'views.phone.call'),
-    (r'^phone/twiml/(.*)$', 'views.phone.twiml'),
     # Mail
     (r'^mail/send$', 'views.mail.send'),
     # Author

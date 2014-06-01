@@ -8,6 +8,7 @@ from twilio.rest import TwilioRestClient
 from random import SystemRandom
 import datetime
 import json_fixed
+import json
 
 logger = getLogger('django.request')
 
@@ -25,7 +26,11 @@ def create(request):
     content = Content(author=author.key, text=text)
     content.put()
 
-    return HttpResponse(json_fixed.dumps(content))
+    resp = content.to_dict()
+    resp['content_id'] = content.key.id()
+    del resp['author']
+
+    return HttpResponse(json.dumps(resp))
 
 def dump(result):
     """
