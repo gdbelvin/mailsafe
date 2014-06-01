@@ -41,7 +41,7 @@ def update(request, content_id):
     author_email = request.POST["author_email"]
     text = request.POST["text"]
     subject = request.POST.get("subject")
-    status = request.POST.get('status')
+    status = request.POST.get("status")
     
     content = ndb.Key(Content, int(content_id)).get()
     if (content is None):
@@ -69,7 +69,7 @@ def dump(result):
     return HttpResponse(json_fixed.dumps(docs))
 
 def rest(request, content_id):
-    if request.method == 'POST':
+    if request.method == 'POST' or request.method == 'PUT':
         return update(request, content_id)
     elif request.method == 'GET':
         return get(request, content_id)
@@ -103,14 +103,16 @@ def send(request, content_id):
     subject = "A MailSafe Message From %s" % author.name
     message = """Dear %s,\n
 You have received a message from %s through MailSafe. Please click on the following link to view their message:\n
-https://mail-safe.appspot.com/doc/%s\n
-https://mailsafe.herokuapp.com/public/letter/%s\n
+https://mail-safe.herokuapp.com/public/letter/%s\n
 The MailSafe Team"""
     from_email = "gdbelvin@wisebold.com"
 
     # Each element of datatuple is of the format: 
     # (subject, message, from_email, recipient_list)
-    datatuple = tuple([(subject, message % (link['supporter_name'], author.name, link['uuid'], link['uuid']), from_email, [link['email']]) for link in links])
+    datatuple = tuple([(subject, message % (link['supporter_name'], author.name, link['uuid']), from_email, [link['email']]) for link in links])
     mail.send_mass_mail(datatuple, fail_silently=False)
+
+    content.status = 'published'
+    content.put()
 
     return HttpResponse("sent %d emails on behalf of %s for doc %s to %s" % (len(datatuple), author.name, content.key, datatuple))

@@ -1,10 +1,11 @@
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone, HttpResponseServerError, HttpResponseNotFound
 from django.utils.log import getLogger
 from models import Author, Content, Link, Supporter, AuthCode
 from random import SystemRandom
 from twilio.rest import TwilioRestClient 
 import twilio.twiml
+import datetime
 
 logger = getLogger('django.request')
 
@@ -24,7 +25,7 @@ def generate_code(link):
     auth_code.put()
     return code
 
-def send_sms(link, supporter, code):
+def send_sms(link, supporter):
     code = generate_code(link)
     client = TwilioRestClient(settings.ACCOUNT_SID, settings.AUTH_TOKEN) 
     sms = client.messages.create(
@@ -34,7 +35,6 @@ def send_sms(link, supporter, code):
     )
 
 def gen_twiml(request, uuid):
-    code = generate_code(link)
     link = Link.query(Link.uuid == uuid).get()
     if (link is None):
         return HttpResponseNotFound("bad link")
@@ -42,8 +42,9 @@ def gen_twiml(request, uuid):
     if (supporter is None):
         return HttpResponseNotFound("bad link")
 
+    code = generate_code(link)
     resp = twilio.twiml.Response()
-    resp.say("Hello, %s. Here is your code, %s" % (supporter.name, code))
+    resp.say("Hello, %s. Here is your code, %s. Again, your code is, %s" % (supporter.name, code, code))
     return HttpResponse(str(resp))
 
 def call_phone(link, supporter):
@@ -62,13 +63,13 @@ def auth(request, uuid):
     method = request.POST.get("method")
     link = Link.query(Link.uuid == uuid).get()
     if (link is None):
-        return HttpResponseServerError("bad link")
+        return HttpResponseNotFound("bad link")
     supporter = link.supporter.get()
     if (supporter is None):
-        return HttpResponseServerError("bad link")
+        return HttpResponseNotFound("bad link")
     if (method == "phone"):
         call_phone(link, supporter)
     else:
         send_sms(link, supporter)
 
-    return HttpResponse("Auth Sent")
+    return HttpResponse()

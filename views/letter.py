@@ -19,15 +19,15 @@ def linkdump(result):
 def meta(request, link_id):
     link = Link.query(Link.uuid == link_id).get()
     if (link is None):
-        return HttpResponseServerError("bad link")
+        return HttpResponseNotFound("bad link")
     supporter = link.supporter.get()
     if (supporter is None):
-        return HttpResponseServerError("bad link")
-    supporter_name = supporter.name
-    return HttpResponse(supporter.name)
+        return HttpResponseNotFound("bad link")
+    ret = {'name': supporter.name}
+    return HttpResponse(json.dumps(ret), status=401)
 
 def get(request, link_id, sms_code):
-    dlink = Link.query(Link.uuid == link_id).get()
+    link = Link.query(Link.uuid == link_id).get()
     if (link is None):
         return HttpResponseServerError("bad link")
 
@@ -36,7 +36,7 @@ def get(request, link_id, sms_code):
         return HttpResponseServerError("bad link")
             
     content = link.content.get()
-    if(content.state != "published"):
+    if(content.status != "published"):
         return HttpResponseServerError("deactivated link")
 
     # Verify code
