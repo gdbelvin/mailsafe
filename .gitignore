@@ -19,3 +19,5 @@ httplib2
 socks.py
 
 build
+
+setup.py
