@@ -18,6 +18,9 @@ class Content(ndb.Model):
     subject = ndb.StringProperty()
     text = ndb.TextProperty()
     author = ndb.KeyProperty(kind=Author)
+    status = ndb.StringProperty()
+    date_updated = ndb.DateTimeProperty(auto_now_add=True)
+    date_created = ndb.DateTimeProperty(auto_now_add=True)
 
 class Link(ndb.Model):
     uuid = ndb.StringProperty()

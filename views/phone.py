@@ -1,57 +1,57 @@
 from django.conf import settings
-from django.template import loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseGone
 from django.utils.log import getLogger
+from models import Author, Content, Link, Supporter, AuthCode
+from random import SystemRandom
 from twilio.rest import TwilioRestClient 
+import twilio.twiml
 
 logger = getLogger('django.request')
 
-def sms(request, text):
-    """
-    Test page for sending text messages.
-    """
+def send_sms(link, supporter, code):
+    code = generate_code(link)
     client = TwilioRestClient(settings.ACCOUNT_SID, settings.AUTH_TOKEN) 
     sms = client.messages.create(
-            to="4105416123", 
+            to=supporter.phone,
             from_="+14158892387", 
-            body=text,  
+            body=code,  
     )
 
-    return HttpResponse(sms.sid)
+def gen_twiml(request, uuid):
+    code = generate_code(link)
+    link = Link.query(Link.uuid == uuid).get()
+    if (link is None):
+        return HttpResponseNotFound("bad link")
+    supporter = link.supporter.get()
+    if (supporter is None):
+        return HttpResponseNotFound("bad link")
 
-def call(request, text):
-    """
-    Test page for getting the key pad the user pressed.
-    """
+    resp = twilio.twiml.Response()
+    resp.say("Hello, %s. Here is your code, %s" % (supporter.name, code))
+    return HttpResponse(str(resp))
+
+def call_phone(link, supporter):
     client = TwilioRestClient(settings.ACCOUNT_SID, settings.AUTH_TOKEN) 
-
     call = client.calls.create(
-            to="4105416123", 
+            to=supporter.phone, 
             from_="+14158892387", 
-            url="mail-safe.appspot.com/twiml/%s" % text,   #URL to find Twitxml
+            url="%s/twiml/%s" %(settings.SERVER, link.uuid),
             method="GET",  
             fallback_method="GET",  
             status_callback_method="GET",    
             record="false"
     ) 
-     
-    return HttpResponse(sms.sid)
 
-def twiml(request, text):
-    """
-    Handler for generating TwiML
-    """
-    twiml = """
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Gather timeout="10" numDigits=1 action="mail-safe.appspot.com/resp/">
-        <Say>Hello, are you %s? Press 1 if you are. Press 2 otherwise.</Say>
-    </Gather>
-</Response>
-"""
-    return HttpResponse(format(twiml, text))
+def auth(request, uuid):
+    link = Link.query(Link.uuid == uuid).get()
+    if (link is None):
+        return HttpResponseServerError("bad link")
+    supporter = link.supporter.get()
+    if (supporter is None):
+        return HttpResponseServerError("bad link")
+    if False:
+        send_sms(link, supporter)
+    else:
+        call_phone(link, supporter)
 
-def resp(request, text):
-    print text
-    return HttpResponse(text)
-
+    return HttpResponse("Auth Sent") #Auth Sent
