@@ -17,9 +17,9 @@ def create(request):
     email = request.POST["email"]
     author_email = request.POST["author_email"]
 
-    author = Author.query(Author.email == email).get()
+    author = Author.query(Author.email == author_email).get()
     if (author is None): 
-        return HttpResponseServerError("Author %s not found" % author_email)
+        return HttpResponseNotFound("Author %s not found" % author_email)
 
     supporter = Supporter(name=name, email=email, phone=phone, of=[author.key])
     supporter.put()

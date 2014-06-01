@@ -5,6 +5,7 @@ from django.utils.log import getLogger
 from google.appengine.ext import ndb
 from models import Author, Content, Link, Supporter, AuthCode
 from twilio.rest import TwilioRestClient 
+import twilio.twiml
 from random import SystemRandom
 import datetime
 import json_fixed
@@ -53,11 +54,9 @@ def meta(request, link_id):
     supporter_name = supporter.name
     return HttpResponse(supporter.name)
 
-def auth(request, link_id):
-    link = Link.query(Link.uuid == link_id).get()
-    if (link is None):
-        return HttpResponseServerError("bad link")
+def generate_code(link):
     # Generate new code and timestamp.
+    # Saves code to AuthCode table
     code_len = 5
     code = str(SystemRandom().randint(0, 10**code_len)).zfill(code_len)
     timeout = datetime.datetime.now() + datetime.timedelta(minutes = 5)
@@ -68,18 +67,54 @@ def auth(request, link_id):
     auth_code.code = code
     auth_code.timeout=timeout
     auth_code.put()
+    return code
 
-    # Call the phone. 
-    supporter = link.supporter.get()
-    if (supporter is None):
-        return HttpResponseServerError("bad link")
-
+def send_sms(link, supporter, code):
+    code = generate_code(link)
     client = TwilioRestClient(settings.ACCOUNT_SID, settings.AUTH_TOKEN) 
     sms = client.messages.create(
             to=supporter.phone,
             from_="+14158892387", 
             body=code,  
     )
+
+def gen_twiml(request, uuid):
+    code = generate_code(link)
+    link = Link.query(Link.uuid == uuid).get()
+    if (link is None):
+        return HttpResponseNotFound("bad link")
+    supporter = link.supporter.get()
+    if (supporter is None):
+        return HttpResponseNotFound("bad link")
+
+    resp = twilio.twiml.Response()
+    resp.say("Hello, %s. Here is your code, %s" % (supporter.name, code))
+    return HttpResponse(str(resp))
+
+def call_phone(link, supporter):
+    client = TwilioRestClient(settings.ACCOUNT_SID, settings.AUTH_TOKEN) 
+    call = client.calls.create(
+            to=supporter.phone, 
+            from_="+14158892387", 
+            url="%s/twiml/%s" %(settings.SERVER, link.uuid),
+            method="GET",  
+            fallback_method="GET",  
+            status_callback_method="GET",    
+            record="false"
+    ) 
+
+def auth(request, uuid):
+    link = Link.query(Link.uuid == uuid).get()
+    if (link is None):
+        return HttpResponseServerError("bad link")
+    supporter = link.supporter.get()
+    if (supporter is None):
+        return HttpResponseServerError("bad link")
+    if False:
+        send_sms(link, supporter)
+    else:
+        call_phone(link, supporter)
+
     return HttpResponse("Auth Sent") #Auth Sent
     
 def get(request, link_id, sms_code):

@@ -17,6 +17,8 @@ urlpatterns = patterns('',
     ('^v/.*$', 'django.views.generic.simple.direct_to_template', {'template': 'verifyid.html'}),
     ('^admin/', include(admin.site.urls)),
 
+    # Twilio
+    (r'^twiml/(.*)$', 'views.doc.gen_twiml'),
     # Mail
     (r'^mail/send$', 'views.mail.send'),
     # Author
