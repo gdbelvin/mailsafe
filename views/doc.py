@@ -105,7 +105,7 @@ def send(request, content_id):
 You have received a message from %s through MailSafe. Please click on the following link to view their message:\n
 https://mail-safe.herokuapp.com/public/letter/%s\n
 The MailSafe Team"""
-    from_email = "gdbelvin@wisebold.com"
+    from_email = settings.SERVER_EMAIL
 
     # Each element of datatuple is of the format: 
     # (subject, message, from_email, recipient_list)

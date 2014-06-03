@@ -43,6 +43,7 @@ def gen_twiml(request, uuid):
         return HttpResponseNotFound("bad link")
 
     code = generate_code(link)
+    code = " ".join(code) 
     resp = twilio.twiml.Response()
     resp.say("Hello, %s. Here is your code, %s. Again, your code is, %s" % (supporter.name, code, code))
     return HttpResponse(str(resp))
@@ -51,7 +52,7 @@ def call_phone(link, supporter):
     client = TwilioRestClient(settings.ACCOUNT_SID, settings.AUTH_TOKEN) 
     call = client.calls.create(
             to=supporter.phone, 
-            from_="+14158892387", 
+            from_=settings.SRC_PHONE, 
             url="%s/twiml/%s" %(settings.SERVER, link.uuid),
             method="GET",  
             fallback_method="GET",  
