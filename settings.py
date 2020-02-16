@@ -16,22 +16,13 @@ SERVER = 'http://mail-safe.appspot.com'
 #DEBUG = True
 
 # Twilio test credentials
-#ACCOUNT_SID = "ACf555ba70a888322ce31c733bce3f7d78"
-#AUTH_TOKEN = "1e23989f42ae46409ea979ca8778e33e"
-
-# Twilio auth token for gdbelvin@gmail.com
-#ACCOUNT_SID = "AC6c969a1a163ccd6714bfd00779851194" 
-#AUTH_TOKEN = "8ffe13c1959587d78ab5d1026038390d"
-#SRC_PHONE = ""
-
-# Twilio auth for the.urbanus@gmail.com
-ACCOUNT_SID = "AC7a1405a1cf91223c645557c7c8934166"
-AUTH_TOKEN = "d5e5ff9216c0cd64747d7c2f363c6ea5"
-SRC_PHONE = "+14106975753"
+ACCOUNT_SID = "ACf555ba70a888322ce31c733bce3f7d78"
+AUTH_TOKEN = "1e23989f42ae46409ea979ca8778e33e"
+SRC_PHONE = "+14106975750"
 
 # Error reporting
-ADMINS = (('Gary', 'gdbelvin@gmail.com'))
-SERVER_EMAIL = "gdbelvin@wisebold.com"
+ADMINS = (('Foo', 'foobar@gmail.com'))
+SERVER_EMAIL = "foobar@foobar.com"
 
 INSTALLED_APPS = (
     'django.contrib.admin',
